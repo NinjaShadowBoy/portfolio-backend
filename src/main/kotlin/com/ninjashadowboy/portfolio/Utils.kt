@@ -3,7 +3,7 @@ package com.ninjashadowboy.portfolio
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-object myProfiler {
+object MyProfiler {
     private val log: Logger = LoggerFactory.getLogger(javaClass)
     fun <T> profileOperation(name: String = "Operation", operation: () -> T): T {
         val start = System.nanoTime()

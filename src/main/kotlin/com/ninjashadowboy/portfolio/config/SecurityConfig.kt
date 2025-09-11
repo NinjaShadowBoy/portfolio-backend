@@ -29,7 +29,7 @@ class SecurityConfig(
                     .requestMatchers(
                         "/**", "/api/v1/auth/**",
                         "/css/**", "/js/**", "/images/**", "/favicon.ico",
-                        "/uploads/**", "/swagger-ui", "/swagger-ui/**", "/api-docs", "/api-docs/**"
+                        "/uploads/**", "/swagger-ui", "/swagger-ui/**", "/api-docs", "/api-docs/**",
                     ).permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/projects").permitAll()
                     .requestMatchers("/api/v1/photo/**").hasAuthority("ADMIN")

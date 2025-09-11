@@ -16,7 +16,13 @@ data class UserRegistrationDto(
     val email: String,
     val password: String,
     val name: String
-)
+) {
+    init {
+        require(email.isNotBlank()) { "Email cannot be blank" }
+        require(password.isNotBlank()) { "Password cannot be blank" }
+        require(name.isNotBlank()) { "Name cannot be blank" }
+    }
+}
 
 data class UserUpdateDto(
     val name: String? = null,
