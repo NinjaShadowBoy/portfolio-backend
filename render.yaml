@@ -1,85 +1,27 @@
 services:
-  # --- Spring Boot (Kotlin) backend ---
   - type: web
-    name: portfolio-backend
+    name: kotlin-backend
     env: docker
     plan: free
-    region: frankfurt
-    dockerfilePath: ./Dockerfile
-    autoDeploy: true
-    healthCheckPath: /
+    buildCommand: ./gradlew build
+    startCommand: java -jar build/libs/*.jar
     envVars:
-      - key: SPRING_PROFILES_ACTIVE
-        value: prod
-      # Database config (overrides application.properties)
-      - key: DB_HOST
-        fromService:
-          type: pserv
-          name: portfolio-mysql
-          property: host
-      - key: DB_PORT
-        fromService:
-          type: pserv
-          name: portfolio-mysql
-          property: port
-      - key: DB_NAME
-        fromService:
-          type: pserv
-          name: portfolio-mysql
-          property: database
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: mydb
+          property: connectionString
       - key: SPRING_DATASOURCE_USERNAME
-        fromService:
-          type: pserv
-          name: portfolio-mysql
+        fromDatabase:
+          name: mydb
           property: user
       - key: SPRING_DATASOURCE_PASSWORD
-        fromService:
-          type: pserv
-          name: portfolio-mysql
+        fromDatabase:
+          name: mydb
           property: password
-      # JPA
-      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
-        value: update
-      - key: SPRING_JPA_SHOW_SQL
-        value: "false"
-      - key: SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL
-        value: "false"
-      # JWT & security
-      - key: JWT_SECRET
-        generateValue: true
-      - key: JWT_EXPIRATION
-        value: "86400000"
-      - key: JWT_ISSUER
-        value: PortfolioApp
-      # File upload dirs (in ephemeral container fs)
-      - key: PROFILE_PHOTO_UPLOAD_DIR
-        value: /data/uploads/profilephoto
-      - key: PHOTO_UPLOAD_DIR
-        value: /data/uploads/photos
-    runtime: docker
-    # ❌ Remove disks block — not supported on free plan web services
 
-  # --- MySQL persistent service ---
-  - type: pserv
-    name: portfolio-mysql
+databases:
+  - name: mydb
+    databaseName: mydb
+    user: myuser
     plan: free
-    region: frankfurt
-    env: docker
-    dockerfilePath: ""
-    image: mysql:8.0
-    autoDeploy: false
-    envVars:
-      - key: MYSQL_DATABASE
-        value: portfolio
-      - key: MYSQL_USER
-        value: portfolio
-      - key: MYSQL_PASSWORD
-        generateValue: true
-      - key: MYSQL_ROOT_PASSWORD
-        generateValue: true
-      - key: MYSQL_TCP_PORT
-        value: 3306
-    disks:
-      - name: data
-        mountPath: /var/lib/mysql
-        sizeGB: 1
+    engine: mysql
