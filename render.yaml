@@ -1,0 +1,90 @@
+services:
+  - type: web
+    name: portfolio-backend
+    env: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./Dockerfile
+    autoDeploy: true
+    healthCheckPath: /
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      # Database config (overrides application.properties)
+      - key: DB_HOST
+        fromService:
+          type: pserv
+          name: portfolio-mysql
+          property: host
+      - key: DB_PORT
+        fromService:
+          type: pserv
+          name: portfolio-mysql
+          property: port
+      - key: DB_NAME
+        fromService:
+          type: pserv
+          name: portfolio-mysql
+          property: database
+      - key: SPRING_DATASOURCE_USERNAME
+        fromService:
+          type: pserv
+          name: portfolio-mysql
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromService:
+          type: pserv
+          name: portfolio-mysql
+          property: password
+      # JPA
+      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        value: update
+      - key: SPRING_JPA_SHOW_SQL
+        value: "false"
+      - key: SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL
+        value: "false"
+      # JWT & security
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRATION
+        value: "86400000"
+      - key: JWT_ISSUER
+        value: PortfolioApp
+      # File upload dirs (use ephemeral container fs or mount a disk)
+      - key: PROFILE_PHOTO_UPLOAD_DIR
+        value: /data/uploads/profilephoto
+      - key: PHOTO_UPLOAD_DIR
+        value: /data/uploads/photos
+    runtime: docker
+
+    # Optional persistent disk if you need to persist uploads on the web service
+    # disks:
+    #   - name: uploads
+    #     mountPath: /data
+    #     sizeGB: 1
+
+  - type: pserv
+    name: portfolio-mysql
+    env: docker
+    plan: free
+    region: frankfurt
+    autoDeploy: false
+    docker:
+      image: mysql:8.0
+      command: [ "mysqld" ]
+    envVars:
+      - key: MYSQL_DATABASE
+        value: portfolio
+      - key: MYSQL_USER
+        value: portfolio
+      - key: MYSQL_PASSWORD
+        generateValue: true
+      - key: MYSQL_ROOT_PASSWORD
+        generateValue: true
+      - key: MYSQL_TCP_PORT
+        value: 3306
+    disks:
+      - name: data
+        mountPath: /var/lib/mysql
+        sizeGB: 1
+    runtime: docker
