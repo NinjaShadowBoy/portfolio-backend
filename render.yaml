@@ -9,28 +9,12 @@ services:
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
-      - key: DB_HOST
+      - key: DATABASE_URL
         fromDatabase:
           name: mydb
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: mydb
-          property: port
-      - key: DB_NAME
-        fromDatabase:
-          name: mydb
-          property: database
-      - key: SPRING_DATASOURCE_USERNAME
-        fromDatabase:
-          name: mydb
-          property: user
-      - key: SPRING_DATASOURCE_PASSWORD
-        fromDatabase:
-          name: mydb
-          property: password
+          property: connectionString
       - key: PORT
-        value: 8080
+        value: 10000
 
 databases:
   - name: mydb
