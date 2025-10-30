@@ -21,23 +21,15 @@ class SecurityConfig(
 ) {
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        http
-            .csrf { it.disable() }
-            .cors { it }
-            .authorizeHttpRequests { auth ->
-                auth
-                    .requestMatchers(
-                        "/**", "/api/v1/auth/**",
-                        "/css/**", "/js/**", "/images/**", "/favicon.ico",
-                        "/uploads/**", "/swagger-ui", "/swagger-ui/**", "/api-docs", "/api-docs/**",
-                    ).permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/v1/projects").permitAll()
-                    .requestMatchers("/api/v1/photo/**").hasAuthority("ADMIN")
-                    .anyRequest().authenticated()
-            }
-            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
-            .authenticationProvider(authenticationProvider)
-            .formLogin { formLogin -> formLogin.disable() }
+        http.csrf { it.disable() }.cors { it }.authorizeHttpRequests { auth ->
+            auth.requestMatchers(
+                "/**", "/api/v1/auth/**",
+                "/css/**", "/js/**", "/images/**", "/favicon.ico",
+                "/uploads/**", "/swagger-ui", "/swagger-ui/**", "/api-docs", "/api-docs/**",
+            ).permitAll().requestMatchers(HttpMethod.GET, "/api/v1/projects").permitAll()
+                .requestMatchers("/api/v1/photo/**").hasAuthority("ADMIN").anyRequest().authenticated()
+        }.sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .authenticationProvider(authenticationProvider).formLogin { formLogin -> formLogin.disable() }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
 
         return http.build()
@@ -46,7 +38,12 @@ class SecurityConfig(
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration().apply {
-            allowedOrigins = listOf("http://localhost:8080", "http://localhost:3000", "http://localhost:4200")
+            allowedOrigins = listOf(
+                "http://localhost:8080",
+                "http://localhost:3000",
+                "http://localhost:4200",
+                "https://ninjashadowboy.github.io"
+            )
             allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
             allowedHeaders = listOf("*")
             allowCredentials = true // Using jwt via Authorization header
