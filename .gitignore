@@ -38,3 +38,5 @@ build/
 ### Uploads ###
 uploads/**
 ignoretoo
+src/main/kotlin/com/ninjashadowboy/portfolio/config/DataSourceConfig.kt
+
