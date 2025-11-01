@@ -1,5 +1,8 @@
 package com.ninjashadowboy.portfolio.config
 
+import com.ninjashadowboy.portfolio.security.oauth2.CustomOAuth2UserService
+import com.ninjashadowboy.portfolio.security.oauth2.OAuth2AuthenticationFailureHandler
+import com.ninjashadowboy.portfolio.security.oauth2.OAuth2AuthenticationSuccessHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -17,19 +20,30 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @EnableWebSecurity
 class SecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
-    private val authenticationProvider: AuthenticationProvider
+    private val authenticationProvider: AuthenticationProvider,
+    private val customOAuth2UserService: CustomOAuth2UserService,
+    private val oAuth2AuthenticationSuccessHandler: OAuth2AuthenticationSuccessHandler,
+    private val oAuth2AuthenticationFailureHandler: OAuth2AuthenticationFailureHandler
 ) {
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http.csrf { it.disable() }.cors { it }.authorizeHttpRequests { auth ->
             auth.requestMatchers(
-                "/**", "/api/v1/auth/**",
+                "/**", "/api/v1/auth/**", "/oauth2/**",
                 "/css/**", "/js/**", "/images/**", "/favicon.ico",
                 "/uploads/**", "/swagger-ui", "/swagger-ui/**", "/api-docs", "/api-docs/**",
             ).permitAll().requestMatchers(HttpMethod.GET, "/api/v1/projects").permitAll()
                 .requestMatchers("/api/v1/photo/**").hasAuthority("ADMIN").anyRequest().authenticated()
         }.sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authenticationProvider(authenticationProvider).formLogin { formLogin -> formLogin.disable() }
+            .oauth2Login { oauth2 ->
+                oauth2
+                    .userInfoEndpoint { userInfo ->
+                        userInfo.userService(customOAuth2UserService)
+                    }
+                    .successHandler(oAuth2AuthenticationSuccessHandler)
+                    .failureHandler(oAuth2AuthenticationFailureHandler)
+            }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
 
         return http.build()

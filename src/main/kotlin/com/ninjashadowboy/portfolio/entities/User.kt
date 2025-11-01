@@ -12,12 +12,21 @@ import java.time.LocalDateTime
 data class User(
     @Column(nullable = false, unique = true) val email: String,
 
-    @Column(nullable = false) val pwd: String,
+    @Column(nullable = true) val pwd: String? = null,
 
     @Column(nullable = false) val name: String,
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false) val role: Role = Role.USER,
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false) val provider: AuthProvider = AuthProvider.LOCAL,
+
+    val providerId: String? = null,
+
+    val imageUrl: String? = null,
+
+    val emailVerified: Boolean = false,
 
     val lastLoginAt: LocalDateTime? = null,
 
