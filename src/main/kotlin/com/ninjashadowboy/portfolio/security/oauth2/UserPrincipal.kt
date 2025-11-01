@@ -15,19 +15,19 @@ import org.springframework.security.oauth2.core.user.OAuth2User
 class UserPrincipal(
     val id: Long,
     val email: String,
-    private val password: String?,
-    val name: String,
+    private val pwd: String?,
+    val nameText: String,
     private val authorities: Collection<GrantedAuthority>,
     private val attributes: Map<String, Any> = emptyMap()
 ) : OAuth2User, UserDetails {
 
-    override fun getName(): String = name
+    override fun getName(): String = nameText
 
     override fun getAttributes(): Map<String, Any> = attributes
 
     override fun getAuthorities(): Collection<GrantedAuthority> = authorities
 
-    override fun getPassword(): String? = password
+    override fun getPassword(): String? = pwd
 
     override fun getUsername(): String = email
 
@@ -44,9 +44,9 @@ class UserPrincipal(
             return UserPrincipal(
                 id = user.id,
                 email = user.email,
-                password = user.pwd,
-                name = user.name,
-                authorities = user.authorities ?: emptyList()
+                pwd = user.pwd,
+                nameText = user.name,
+                authorities = user.authorities
             )
         }
 
@@ -55,8 +55,8 @@ class UserPrincipal(
             return UserPrincipal(
                 id = userPrincipal.id,
                 email = userPrincipal.email,
-                password = userPrincipal.password,
-                name = userPrincipal.name,
+                pwd = userPrincipal.pwd,
+                nameText = userPrincipal.nameText,
                 authorities = userPrincipal.authorities,
                 attributes = attributes
             )

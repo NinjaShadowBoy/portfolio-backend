@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 /**
  * Data Transfer Object representing a complete project.
  * 
- * Contains all project information including metadata, ratings, and associated photos.
+ * Contains all project information, including metadata, ratings, and associated photos.
  * Used in responses when retrieving projects.
  * 
  * @property id Unique project identifier
@@ -27,35 +27,35 @@ import java.time.LocalDateTime
     description = "Complete project information including metadata, ratings, and photos"
 )
 data class ProjectDto(
-    @Schema(
+    @field:Schema(
         description = "Unique identifier for the project",
         example = "1",
         required = true
     )
     val id: Long,
     
-    @Schema(
+    @field:Schema(
         description = "Project name or title",
         example = "E-Commerce Platform",
         required = true
     )
     val name: String,
     
-    @Schema(
+    @field:Schema(
         description = "Detailed description of the project, its purpose, and features",
         example = "A full-stack e-commerce platform with payment integration, inventory management, and user authentication",
         required = true
     )
     val description: String,
     
-    @Schema(
+    @field:Schema(
         description = "Set of technologies, frameworks, and tools used in the project",
         example = "[\"Kotlin\", \"Spring Boot\", \"PostgreSQL\", \"React\", \"Docker\"]",
         required = true
     )
     val technologies: Set<String>,
     
-    @Schema(
+    @field:Schema(
         description = "URL to the project's GitHub repository",
         example = "https://github.com/username/ecommerce-platform",
         required = false,
@@ -63,7 +63,7 @@ data class ProjectDto(
     )
     val githubLink: String?,
     
-    @Schema(
+    @field:Schema(
         description = "Description of technical or design challenges faced during development",
         example = "Implementing real-time inventory synchronization across distributed systems",
         required = false,
@@ -71,7 +71,7 @@ data class ProjectDto(
     )
     val challenges: String?,
     
-    @Schema(
+    @field:Schema(
         description = "Key lessons and skills learned from this project",
         example = "Gained experience with microservices architecture and event-driven design",
         required = false,
@@ -79,7 +79,7 @@ data class ProjectDto(
     )
     val whatILearned: String?,
     
-    @Schema(
+    @field:Schema(
         description = "Whether this project is featured/highlighted on the portfolio",
         example = "true",
         required = true,
@@ -87,7 +87,7 @@ data class ProjectDto(
     )
     val featured: Boolean,
     
-    @Schema(
+    @field:Schema(
         description = "Timestamp when the project was created",
         example = "2025-01-15T10:30:00",
         required = true,
@@ -95,7 +95,7 @@ data class ProjectDto(
     )
     val createdAt: LocalDateTime,
     
-    @Schema(
+    @field:Schema(
         description = "Timestamp when the project was last updated",
         example = "2025-10-20T15:45:00",
         required = true,
@@ -103,7 +103,7 @@ data class ProjectDto(
     )
     val updatedAt: LocalDateTime,
     
-    @Schema(
+    @field:Schema(
         description = "Average rating from users (0.0 to 5.0 stars)",
         example = "4.5",
         required = true,
@@ -112,7 +112,7 @@ data class ProjectDto(
     )
     val averageRating: Float,
     
-    @Schema(
+    @field:Schema(
         description = "Total number of ratings this project has received",
         example = "42",
         required = true,
@@ -120,7 +120,7 @@ data class ProjectDto(
     )
     val totalRatings: Int,
     
-    @Schema(
+    @field:Schema(
         description = "List of URLs to photos associated with this project",
         example = "[\"/uploads/photos/project-1/screenshot1.jpg\", \"/uploads/photos/project-1/screenshot2.jpg\"]",
         required = true
@@ -146,7 +146,7 @@ data class ProjectDto(
     description = "Request payload for creating a new project"
 )
 data class ProjectCreateDto(
-    @Schema(
+    @field:Schema(
         description = "Project name or title",
         example = "Machine Learning Chatbot",
         required = true,
@@ -154,8 +154,8 @@ data class ProjectCreateDto(
         maxLength = 200
     )
     val name: String,
-    
-    @Schema(
+
+    @field:Schema(
         description = "Detailed description of the project",
         example = "An AI-powered chatbot using natural language processing to answer customer queries",
         required = true,
@@ -163,40 +163,39 @@ data class ProjectCreateDto(
         maxLength = 5000
     )
     val description: String,
-    
-    @Schema(
+
+    @field:Schema(
         description = "Technologies and tools used (at least one required)",
         example = "[\"Python\", \"TensorFlow\", \"FastAPI\", \"Docker\"]",
         required = true,
-        minItems = 1
     )
     val technologies: Set<String>,
-    
-    @Schema(
+
+    @field:Schema(
         description = "GitHub repository URL (optional)",
         example = "https://github.com/username/ml-chatbot",
         required = false,
         nullable = true
     )
     val githubLink: String? = null,
-    
-    @Schema(
+
+    @field:Schema(
         description = "Technical challenges faced (optional)",
         example = "Training the model with limited data and optimizing response time",
         required = false,
         nullable = true
     )
     val challenges: String? = null,
-    
-    @Schema(
+
+    @field:Schema(
         description = "Key learnings from the project (optional)",
         example = "Learned advanced NLP techniques and deployment strategies for ML models",
         required = false,
         nullable = true
     )
     val whatILearned: String? = null,
-    
-    @Schema(
+
+    @field:Schema(
         description = "Whether to feature this project on the portfolio homepage",
         example = "false",
         required = false,
@@ -223,7 +222,7 @@ data class ProjectCreateDto(
     description = "Request payload for updating project information (all fields optional)"
 )
 data class ProjectUpdateDto(
-    @Schema(
+    @field:Schema(
         description = "Updated project name",
         example = "Advanced ML Chatbot v2",
         required = false,
@@ -231,7 +230,7 @@ data class ProjectUpdateDto(
     )
     val name: String? = null,
     
-    @Schema(
+    @field:Schema(
         description = "Updated project description",
         example = "Enhanced version with multi-language support and context awareness",
         required = false,
@@ -239,7 +238,7 @@ data class ProjectUpdateDto(
     )
     val description: String? = null,
     
-    @Schema(
+    @field:Schema(
         description = "Updated set of technologies",
         example = "[\"Python\", \"PyTorch\", \"FastAPI\", \"Redis\", \"Docker\"]",
         required = false,
@@ -247,7 +246,7 @@ data class ProjectUpdateDto(
     )
     val technologies: Set<String>? = null,
     
-    @Schema(
+    @field:Schema(
         description = "Updated GitHub repository URL",
         example = "https://github.com/username/ml-chatbot-v2",
         required = false,
@@ -255,7 +254,7 @@ data class ProjectUpdateDto(
     )
     val githubLink: String? = null,
     
-    @Schema(
+    @field:Schema(
         description = "Updated challenges description",
         example = "Implementing multi-language support while maintaining performance",
         required = false,
@@ -263,7 +262,7 @@ data class ProjectUpdateDto(
     )
     val challenges: String? = null,
     
-    @Schema(
+    @field:Schema(
         description = "Updated lessons learned",
         example = "Mastered transformer models and production ML deployment",
         required = false,
@@ -271,7 +270,7 @@ data class ProjectUpdateDto(
     )
     val whatILearned: String? = null,
     
-    @Schema(
+    @field:Schema(
         description = "Updated featured status",
         example = "true",
         required = false,

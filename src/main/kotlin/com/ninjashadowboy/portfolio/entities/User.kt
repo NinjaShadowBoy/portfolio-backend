@@ -39,7 +39,7 @@ data class User(
     val ratings: MutableList<Rating> = mutableListOf(),
 ) : BaseEntity(), UserDetails {
 
-    override fun getAuthorities(): Collection<GrantedAuthority?>? = when (role) {
+    override fun getAuthorities(): Collection<GrantedAuthority> = when (role) {
         Role.ADMIN -> listOf(
             SimpleGrantedAuthority(Role.ADMIN.name),
             SimpleGrantedAuthority(Role.USER.name),

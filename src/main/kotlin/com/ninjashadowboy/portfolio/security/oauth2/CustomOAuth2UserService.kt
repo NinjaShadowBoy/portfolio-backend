@@ -4,6 +4,7 @@ import com.ninjashadowboy.portfolio.entities.AuthProvider
 import com.ninjashadowboy.portfolio.entities.Role
 import com.ninjashadowboy.portfolio.entities.User
 import com.ninjashadowboy.portfolio.repositories.UserRepo
+import com.ninjashadowboy.portfolio.security.oauth2.user.OAuth2UserInfo
 import com.ninjashadowboy.portfolio.security.oauth2.user.OAuth2UserInfoFactory
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

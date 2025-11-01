@@ -46,17 +46,15 @@ class OAuth2AuthenticationSuccessHandler(
         redirectStrategy.sendRedirect(request, response, targetUrl)
     }
 
-    protected fun determineTargetUrl(
+    override fun determineTargetUrl(
         request: HttpServletRequest,
         response: HttpServletResponse,
         authentication: Authentication
     ): String {
-        val principal = authentication.principal
-
         // Get the user from the principal
-        val user: User = when (principal) {
+        val user: User = when (val principal = authentication.principal) {
             is UserPrincipal -> {
-                // OAuth2 authentication - fetch the full user from database
+                // OAuth2 authentication - fetch the full user from the database
                 userRepo.findUserByEmail(principal.email)
                     ?: throw IllegalStateException("User not found: ${principal.email}")
             }
