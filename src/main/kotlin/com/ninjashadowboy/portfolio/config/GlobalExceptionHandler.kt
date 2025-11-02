@@ -1,5 +1,6 @@
 package com.ninjashadowboy.portfolio.config
 
+import com.ninjashadowboy.portfolio.exceptions.*
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.ConstraintViolationException
 import org.slf4j.Logger
@@ -15,7 +16,6 @@ import org.springframework.web.HttpMediaTypeNotSupportedException
 import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.MissingServletRequestParameterException
-import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
@@ -47,16 +47,17 @@ class GlobalExceptionHandler {
 
     // ─── CUSTOM EXCEPTIONS ─────────────────────────────────────────────────────────
 
-    @ExceptionHandler(ResourceNotFoundException::class)
+    @ExceptionHandler(com.ninjashadowboy.portfolio.exceptions.ResourceNotFoundException::class)
     fun handleResourceNotFoundException(
-        ex: ResourceNotFoundException, request: HttpServletRequest
+        ex: com.ninjashadowboy.portfolio.exceptions.ResourceNotFoundException,
+        request: HttpServletRequest
     ): ResponseEntity<ApiErrorResponse> {
         log.warn("Resource not found: {} - {}", ex.message, request.requestURI)
 
         val errorResponse = ApiErrorResponse(
             status = HttpStatus.NOT_FOUND.value(),
             error = "Resource Not Found",
-            code = "RESOURCE_NOT_FOUND",
+            code = ex.errorCode,
             message = ex.message ?: "The requested resource was not found",
             path = request.requestURI,
             timestamp = Instant.now()
@@ -65,22 +66,123 @@ class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse)
     }
 
-    @ExceptionHandler(BusinessLogicException::class)
-    fun handleBusinessLogicException(
-        ex: BusinessLogicException, request: HttpServletRequest
+    @ExceptionHandler(com.ninjashadowboy.portfolio.exceptions.ResourceAlreadyExistsException::class)
+    fun handleResourceAlreadyExistsException(
+        ex: com.ninjashadowboy.portfolio.exceptions.ResourceAlreadyExistsException,
+        request: HttpServletRequest
     ): ResponseEntity<ApiErrorResponse> {
-        log.warn("Business logic error: {} - {}", ex.message, request.requestURI)
+        log.warn("Resource already exists: {} - {}", ex.message, request.requestURI)
+
+        val errorResponse = ApiErrorResponse(
+            status = HttpStatus.CONFLICT.value(),
+            error = "Resource Already Exists",
+            code = ex.errorCode,
+            message = ex.message ?: "The resource already exists",
+            path = request.requestURI,
+            timestamp = Instant.now()
+        )
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse)
+    }
+
+    @ExceptionHandler(com.ninjashadowboy.portfolio.exceptions.BusinessRuleViolationException::class)
+    fun handleBusinessRuleViolationException(
+        ex: com.ninjashadowboy.portfolio.exceptions.BusinessRuleViolationException,
+        request: HttpServletRequest
+    ): ResponseEntity<ApiErrorResponse> {
+        log.warn("Business rule violation: {} - {}", ex.message, request.requestURI)
 
         val errorResponse = ApiErrorResponse(
             status = HttpStatus.BAD_REQUEST.value(),
-            error = "Business Logic Error",
+            error = "Business Rule Violation",
             code = ex.errorCode,
-            message = ex.message ?: "A business logic error occurred",
+            message = ex.message ?: "A business rule was violated",
             path = request.requestURI,
             timestamp = Instant.now()
         )
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse)
+    }
+
+    @ExceptionHandler(com.ninjashadowboy.portfolio.exceptions.FileProcessingException::class)
+    fun handleFileProcessingException(
+        ex: com.ninjashadowboy.portfolio.exceptions.FileProcessingException,
+        request: HttpServletRequest
+    ): ResponseEntity<ApiErrorResponse> {
+        log.error("File processing error: {} - {}", ex.message, request.requestURI, ex)
+
+        val errorResponse = ApiErrorResponse(
+            status = HttpStatus.INTERNAL_SERVER_ERROR.value(),
+            error = "File Processing Error",
+            code = ex.errorCode,
+            message = ex.message ?: "Failed to process file",
+            path = request.requestURI,
+            timestamp = Instant.now()
+        )
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse)
+    }
+
+    @ExceptionHandler(com.ninjashadowboy.portfolio.exceptions.InsufficientPermissionException::class)
+    fun handleInsufficientPermissionException(
+        ex: com.ninjashadowboy.portfolio.exceptions.InsufficientPermissionException,
+        request: HttpServletRequest
+    ): ResponseEntity<ApiErrorResponse> {
+        log.warn("Insufficient permission: {} - {}", ex.message, request.requestURI)
+
+        val errorResponse = ApiErrorResponse(
+            status = HttpStatus.FORBIDDEN.value(),
+            error = "Forbidden",
+            code = ex.errorCode,
+            message = ex.message ?: "You don't have permission to perform this operation",
+            path = request.requestURI,
+            timestamp = Instant.now()
+        )
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse)
+    }
+
+    @ExceptionHandler(com.ninjashadowboy.portfolio.exceptions.ValidationException::class)
+    fun handleCustomValidationException(
+        ex: com.ninjashadowboy.portfolio.exceptions.ValidationException,
+        request: HttpServletRequest
+    ): ResponseEntity<ApiErrorResponse> {
+        log.warn("Validation error: {} - {}", ex.message, request.requestURI)
+
+        val fieldErrors = ex.fieldErrors.map { (field, message) ->
+            FieldErrorDetail(field = field, message = message)
+        }
+
+        val errorResponse = ApiErrorResponse(
+            status = HttpStatus.BAD_REQUEST.value(),
+            error = "Validation Error",
+            code = ex.errorCode,
+            message = ex.message ?: "Validation failed",
+            fieldErrors = if (fieldErrors.isNotEmpty()) fieldErrors else null,
+            path = request.requestURI,
+            timestamp = Instant.now()
+        )
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse)
+    }
+
+    @ExceptionHandler(com.ninjashadowboy.portfolio.exceptions.DuplicateActionException::class)
+    fun handleDuplicateActionException(
+        ex: com.ninjashadowboy.portfolio.exceptions.DuplicateActionException,
+        request: HttpServletRequest
+    ): ResponseEntity<ApiErrorResponse> {
+        log.warn("Duplicate action: {} - {}", ex.message, request.requestURI)
+
+        val errorResponse = ApiErrorResponse(
+            status = HttpStatus.CONFLICT.value(),
+            error = "Duplicate Action",
+            code = ex.errorCode,
+            message = ex.message ?: "This action has already been performed",
+            path = request.requestURI,
+            timestamp = Instant.now()
+        )
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse)
     }
 
     // ─── SPRING FRAMEWORK EXCEPTIONS ───────────────────────────────────────────────
@@ -410,22 +512,8 @@ class GlobalExceptionHandler {
     }
 }
 
-
-@ControllerAdvice
-class Gasdf {
-
-}
 /**
  * Structured error response for API endpoints.
- *
- * @property timestamp When the error occurred
- * @property status HTTP status code
- * @property error HTTP status reason phrase
- * @property code Application-specific error code
- * @property message Human-readable error message
- * @property debugMessage Detailed error message for debugging (only in non-production)
- * @property fieldErrors Validation errors for specific fields
- * @property path Request path where the error occurred
  */
 data class ApiErrorResponse(
     val timestamp: Instant = Instant.now(),
@@ -440,23 +528,9 @@ data class ApiErrorResponse(
 
 /**
  * Details about validation errors for specific fields.
- *
- * @property field The field name that failed validation
- * @property message The validation error message
- * @property rejectedValue The value that was rejected
  */
 data class FieldErrorDetail(
-    val field: String, val message: String, val rejectedValue: String? = null
+    val field: String,
+    val message: String,
+    val rejectedValue: String? = null
 )
-
-/** Custom exception for when a requested resource is not found. */
-class ResourceNotFoundException(message: String? = null) : RuntimeException(message)
-
-/**
- * Custom exception for business logic violations.
- *
- * @property errorCode Application-specific error code
- */
-class BusinessLogicException(
-    message: String? = null, val errorCode: String = "BUSINESS_LOGIC_ERROR"
-) : RuntimeException(message)

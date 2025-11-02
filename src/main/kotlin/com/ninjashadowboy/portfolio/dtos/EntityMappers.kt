@@ -27,9 +27,10 @@ fun Project.toProjectDto(): ProjectDto = ProjectDto(
     featured = featured,
     createdAt = createdAt,
     updatedAt = updatedAt,
-    averageRating = averageRating,
+    averageRating = if (averageRating.isNaN()) 0f else averageRating,
     totalRatings = totalRatings,
-    photoUrls = photos.map { it.photoUrl }
+    photoUrls = photos.map { it.photoUrl },
+    photos = photos.map { it.toPhotoDto() }
 )
 
 fun ProjectCreateDto.toProject(): Project = Project(

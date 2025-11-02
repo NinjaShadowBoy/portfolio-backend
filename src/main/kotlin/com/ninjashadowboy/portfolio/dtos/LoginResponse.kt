@@ -16,20 +16,20 @@ import io.swagger.v3.oas.annotations.media.Schema
     description = "Response payload returned after successful authentication"
 )
 data class LoginResponse(
-    @Schema(
+    @field:Schema(
         description = "JWT Bearer token for authenticating subsequent requests",
         example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
         required = true
     )
     val token: String,
     
-    @Schema(
+    @field:Schema(
         description = "Authenticated user's profile information",
         required = true
     )
     val user: UserDto,
     
-    @Schema(
+    @field:Schema(
         description = "Token expiration time in milliseconds (typically 24 hours = 86400000ms)",
         example = "86400000",
         required = true
@@ -47,14 +47,14 @@ data class LoginResponse(
     description = "Generic authentication response with optional user data"
 )
 data class AuthResponse(
-    @Schema(
+    @field:Schema(
         description = "Response message describing the result of the operation",
         example = "User registered successfully",
         required = true
     )
     val message: String,
     
-    @Schema(
+    @field:Schema(
         description = "User information (only included on successful operations)",
         required = false,
         nullable = true

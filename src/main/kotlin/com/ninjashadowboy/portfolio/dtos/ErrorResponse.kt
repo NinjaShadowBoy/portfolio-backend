@@ -21,7 +21,7 @@ import java.time.LocalDateTime
     description = "Standard error response structure returned by the API when an error occurs"
 )
 data class ErrorResponse(
-    @Schema(
+    @field:Schema(
         description = "Timestamp when the error occurred",
         example = "2025-10-30T14:30:00",
         required = true,
@@ -29,35 +29,35 @@ data class ErrorResponse(
     )
     val timestamp: LocalDateTime,
     
-    @Schema(
+    @field:Schema(
         description = "HTTP status code",
         example = "400",
         required = true
     )
     val status: Int,
     
-    @Schema(
+    @field:Schema(
         description = "HTTP status text description",
         example = "Bad Request",
         required = true
     )
     val error: String,
     
-    @Schema(
+    @field:Schema(
         description = "Detailed error message explaining what went wrong",
         example = "Email cannot be blank",
         required = true
     )
     val message: String,
     
-    @Schema(
+    @field:Schema(
         description = "The request path that caused the error",
         example = "/api/v1/auth/login",
         required = true
     )
     val path: String,
     
-    @Schema(
+    @field:Schema(
         description = "Field-level validation errors (present for validation failures)",
         required = false,
         nullable = true
@@ -79,21 +79,21 @@ data class ErrorResponse(
     description = "Detailed information about a field validation error"
 )
 data class FieldValidationError(
-    @Schema(
+    @field:Schema(
         description = "Name of the field that failed validation",
         example = "email",
         required = true
     )
     val field: String,
     
-    @Schema(
+    @field:Schema(
         description = "Validation error message",
         example = "must be a well-formed email address",
         required = true
     )
     val message: String,
     
-    @Schema(
+    @field:Schema(
         description = "The value that was rejected (may be null or omitted for security)",
         example = "invalid-email",
         required = false,

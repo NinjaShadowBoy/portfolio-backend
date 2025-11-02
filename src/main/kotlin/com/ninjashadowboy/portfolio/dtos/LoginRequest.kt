@@ -22,7 +22,7 @@ import kotlin.text.isNotBlank
     """
 )
 data class LoginRequest(
-    @Schema(
+    @field:Schema(
         description = "User's email address used for authentication",
         example = "user@example.com",
         required = true,
@@ -31,8 +31,8 @@ data class LoginRequest(
         format = "email"
     )
     val email: String,
-    
-    @Schema(
+
+    @field:Schema(
         description = "User's password (minimum 8 characters recommended)",
         example = "SecurePassword123!",
         required = true,
