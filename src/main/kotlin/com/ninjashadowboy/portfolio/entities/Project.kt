@@ -7,26 +7,26 @@ import jakarta.persistence.*
 @Table(name = "projects")
 data class Project(
     @Column(nullable = false, length = 500)
-    val name: String,
+    var name: String,
     
     @Column(nullable = false, columnDefinition = "TEXT")
-    val description: String,
+    var description: String,
 
     @ElementCollection(fetch = FetchType.EAGER) @Column(name = "technology") @CollectionTable(
         name = "project_technologies",
         joinColumns = [JoinColumn(name = "project_id")],
-    ) val technologies: Set<String>,
+    ) var technologies: Set<String>,
 
     @Column(length = 1000)
-    val githubLink: String?,
+    var githubLink: String?,
     
     @Column(columnDefinition = "TEXT")
-    val challenges: String?,
+    var challenges: String?,
     
     @Column(columnDefinition = "TEXT")
-    val whatILearned: String?,
+    var whatILearned: String?,
     
-    val featured: Boolean,
+    var featured: Boolean,
 
     @OneToMany(
         fetch = FetchType.EAGER,

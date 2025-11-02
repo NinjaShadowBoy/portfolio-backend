@@ -7,8 +7,8 @@ import java.time.LocalDateTime
 @Entity
 @Table(name = "ratings")
 class Rating(
-    val rating: Int,
-    val comment: String?,
+    var rating: Int,
+    var comment: String?,
 
     @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)

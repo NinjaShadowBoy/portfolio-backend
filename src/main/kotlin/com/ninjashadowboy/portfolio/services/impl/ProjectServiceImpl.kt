@@ -39,17 +39,17 @@ class ProjectServiceImpl(
         val existingProject = projectRepo.findByIdOrNull(id)
             ?: throw ResourceNotFoundException("Project", id)
 
-        val updatedProject = existingProject.copy(
-            name = projectDto.name ?: existingProject.name,
-            description = projectDto.description ?: existingProject.description,
-            technologies = projectDto.technologies ?: existingProject.technologies,
-            githubLink = projectDto.githubLink ?: existingProject.githubLink,
-            challenges = projectDto.challenges ?: existingProject.challenges,
-            whatILearned = projectDto.whatILearned ?: existingProject.whatILearned,
-            featured = projectDto.featured ?: existingProject.featured
-        )
+        // Update fields directly on the existing entity instead of using copy()
+        // This prevents Hibernate's "don't change the reference to a collection with delete-orphan" error
+        projectDto.name?.let { existingProject.name = it }
+        projectDto.description?.let { existingProject.description = it }
+        projectDto.technologies?.let { existingProject.technologies = it }
+        projectDto.githubLink?.let { existingProject.githubLink = it }
+        projectDto.challenges?.let { existingProject.challenges = it }
+        projectDto.whatILearned?.let { existingProject.whatILearned = it }
+        projectDto.featured?.let { existingProject.featured = it }
 
-        return projectRepo.save(updatedProject).toProjectDto()
+        return projectRepo.save(existingProject).toProjectDto()
     }
 
     override fun deleteProject(id: Long) {

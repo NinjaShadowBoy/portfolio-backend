@@ -14,21 +14,21 @@ data class User(
 
     @Column(nullable = true) val pwd: String? = null,
 
-    @Column(nullable = false) val name: String,
+    @Column(nullable = false) var name: String,
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false) val role: Role = Role.USER,
+    @Column(nullable = false) var role: Role = Role.USER,
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false) val provider: AuthProvider = AuthProvider.LOCAL,
+    @Column(nullable = false) var provider: AuthProvider = AuthProvider.LOCAL,
 
-    val providerId: String? = null,
+    var providerId: String? = null,
 
-    val imageUrl: String? = null,
+    var imageUrl: String? = null,
 
-    val emailVerified: Boolean = false,
+    var emailVerified: Boolean = false,
 
-    val lastLoginAt: LocalDateTime? = null,
+    var lastLoginAt: LocalDateTime? = null,
 
     @OneToMany(
         fetch = FetchType.LAZY,

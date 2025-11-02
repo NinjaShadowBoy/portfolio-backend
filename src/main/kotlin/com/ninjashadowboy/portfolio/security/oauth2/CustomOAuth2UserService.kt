@@ -91,13 +91,13 @@ class CustomOAuth2UserService(
     }
 
     private fun updateExistingUser(existingUser: User, oAuth2UserInfo: OAuth2UserInfo): User {
-        val updatedUser = existingUser.copy(
-            name = oAuth2UserInfo.getName(),
-            imageUrl = oAuth2UserInfo.getImageUrl(),
-            lastLoginAt = LocalDateTime.now()
-        )
+        // Update fields directly on the existing entity instead of using copy()
+        // This prevents Hibernate's "don't change the reference to a collection with delete-orphan" error
+        existingUser.name = oAuth2UserInfo.getName()
+        existingUser.imageUrl = oAuth2UserInfo.getImageUrl()
+        existingUser.lastLoginAt = LocalDateTime.now()
 
-        log.info("Updating existing OAuth2 user: ${updatedUser.email}")
-        return userRepo.save(updatedUser)
+        log.info("Updating existing OAuth2 user: ${existingUser.email}")
+        return userRepo.save(existingUser)
     }
 }

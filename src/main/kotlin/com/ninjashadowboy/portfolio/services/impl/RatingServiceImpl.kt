@@ -76,23 +76,11 @@ class RatingServiceImpl(
             throw IllegalStateException("You can only update your own ratings")
         }
 
-        // Create updated rating
-        val updatedRating = Rating(
-            rating = ratingDto.rating ?: existingRating.rating,
-            comment = ratingDto.comment ?: existingRating.comment,
-            user = existingRating.user,
-            project = existingRating.project
-        )
+        // Update fields directly on the existing entity
+        ratingDto.rating?.let { existingRating.rating = it }
+        ratingDto.comment?.let { existingRating.comment = it }
 
-        // Copy the ID and timestamps from existing rating
-        val ratingWithId = updatedRating.apply {
-            // The ID is set via reflection or by creating a new entity with the same ID
-        }
-
-        // For updating, we need to work with the existing entity
-        // Since Rating is not a data class, we need to save a new one and delete the old
-        ratingRepo.delete(existingRating)
-        val savedRating = ratingRepo.save(updatedRating)
+        val savedRating = ratingRepo.save(existingRating)
         
         return savedRating.toRatingDto()
     }
