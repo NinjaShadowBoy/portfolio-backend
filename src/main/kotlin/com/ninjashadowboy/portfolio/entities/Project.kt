@@ -6,7 +6,10 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "projects")
 data class Project(
+    @Column(nullable = false, length = 500)
     val name: String,
+    
+    @Column(nullable = false, columnDefinition = "TEXT")
     val description: String,
 
     @ElementCollection(fetch = FetchType.EAGER) @Column(name = "technology") @CollectionTable(
@@ -14,9 +17,15 @@ data class Project(
         joinColumns = [JoinColumn(name = "project_id")],
     ) val technologies: Set<String>,
 
+    @Column(length = 1000)
     val githubLink: String?,
+    
+    @Column(columnDefinition = "TEXT")
     val challenges: String?,
+    
+    @Column(columnDefinition = "TEXT")
     val whatILearned: String?,
+    
     val featured: Boolean,
 
     @OneToMany(
