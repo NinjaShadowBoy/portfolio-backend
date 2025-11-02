@@ -8,6 +8,7 @@ import com.ninjashadowboy.portfolio.services.UserService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 
 @Service
@@ -17,9 +18,15 @@ class UserServiceImpl(
 
     private val log: Logger = LoggerFactory.getLogger(javaClass)
 
-    override fun loadUserByUsername(username: String?): UserDetails? {
+    override fun loadUserByUsername(username: String?): UserDetails {
+        if (username.isNullOrBlank()) {
+            log.warn("Attempted to load user with null or blank username")
+            throw UsernameNotFoundException("Username cannot be null or blank")
+        }
+        
         return MyProfiler.profileOperation("Loading user by username") {
-            userRepo.findUserByEmail(username!!)
+            userRepo.findUserByEmail(username)
+                ?: throw UsernameNotFoundException("User not found with email: $username")
         }
     }
 
