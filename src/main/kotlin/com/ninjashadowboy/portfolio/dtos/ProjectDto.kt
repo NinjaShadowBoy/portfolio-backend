@@ -32,7 +32,7 @@ data class ProjectDto(
         example = "1",
         required = true
     )
-    val id: Long,
+    val id: Long?,
     
     @field:Schema(
         description = "Project name or title",
@@ -125,7 +125,13 @@ data class ProjectDto(
         example = "[\"/uploads/photos/project-1/screenshot1.jpg\", \"/uploads/photos/project-1/screenshot2.jpg\"]",
         required = true
     )
-    val photoUrls: List<String>
+    val photoUrls: List<String>,
+    
+    @field:Schema(
+        description = "List of photo objects with IDs and URLs for this project",
+        required = true
+    )
+    val photos: List<PhotoDto> = emptyList()
 )
 
 /**

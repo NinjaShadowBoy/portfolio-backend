@@ -21,14 +21,14 @@ import java.time.LocalDateTime
     description = "User profile information (excludes sensitive data like passwords)"
 )
 data class UserDto(
-    @Schema(
+    @field:Schema(
         description = "Unique identifier for the user",
         example = "1",
         required = true
     )
     val id: Long,
     
-    @Schema(
+    @field:Schema(
         description = "User's email address",
         example = "john.doe@example.com",
         required = true,
@@ -36,14 +36,14 @@ data class UserDto(
     )
     val email: String,
     
-    @Schema(
+    @field:Schema(
         description = "User's full name",
         example = "John Doe",
         required = true
     )
     val name: String,
     
-    @Schema(
+    @field:Schema(
         description = "User's role in the system",
         example = "USER",
         required = true,
@@ -51,7 +51,7 @@ data class UserDto(
     )
     val role: Role,
     
-    @Schema(
+    @field:Schema(
         description = "Timestamp when the user account was created",
         example = "2025-01-15T10:30:00",
         required = true,
@@ -59,7 +59,7 @@ data class UserDto(
     )
     val createdAt: LocalDateTime,
     
-    @Schema(
+    @field:Schema(
         description = "Timestamp of the user's last login (null if never logged in)",
         example = "2025-10-30T14:25:30",
         required = false,
@@ -83,7 +83,7 @@ data class UserDto(
     description = "Request payload for registering a new user account"
 )
 data class UserRegistrationDto(
-    @Schema(
+    @field:Schema(
         description = "Email address for the new account (must be unique)",
         example = "newuser@example.com",
         required = true,
@@ -93,7 +93,7 @@ data class UserRegistrationDto(
     )
     val email: String,
     
-    @Schema(
+    @field:Schema(
         description = "Password for the new account (minimum 8 characters recommended, should include letters, numbers, and special characters)",
         example = "SecurePass123!",
         required = true,
@@ -102,7 +102,7 @@ data class UserRegistrationDto(
     )
     val password: String,
     
-    @Schema(
+    @field:Schema(
         description = "Full name of the user",
         example = "Jane Smith",
         required = true,
@@ -131,7 +131,7 @@ data class UserRegistrationDto(
     description = "Request payload for updating user profile information (all fields optional)"
 )
 data class UserUpdateDto(
-    @Schema(
+    @field:Schema(
         description = "Updated full name",
         example = "John Updated Doe",
         required = false,
@@ -139,7 +139,7 @@ data class UserUpdateDto(
     )
     val name: String? = null,
     
-    @Schema(
+    @field:Schema(
         description = "Updated email address (must be unique if provided)",
         example = "updated.email@example.com",
         required = false,

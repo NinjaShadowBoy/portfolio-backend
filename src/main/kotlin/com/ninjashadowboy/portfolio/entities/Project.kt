@@ -24,14 +24,14 @@ data class Project(
         cascade = [(CascadeType.ALL)],
         orphanRemoval = true,
         mappedBy = "project",
-    ) val photos: List<Photo> = emptyList(),
+    ) val photos: MutableList<Photo> = emptyList<Photo>().toMutableList(),
 
     @OneToMany(
-        fetch = FetchType.LAZY,
+        fetch = FetchType.EAGER,
         cascade = [CascadeType.ALL],
         orphanRemoval = true,
         mappedBy = "project",
-    ) val ratings: List<Rating> = emptyList(),
+    ) val ratings: MutableList<Rating> = emptyList<Rating>().toMutableList(),
 ) : BaseEntity() {
 
     @get:Transient

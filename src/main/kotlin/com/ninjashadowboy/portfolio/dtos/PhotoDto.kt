@@ -16,21 +16,21 @@ import io.swagger.v3.oas.annotations.media.Schema
     description = "Photo information including URL and project association"
 )
 data class PhotoDto(
-    @Schema(
+    @field:Schema(
         description = "Unique identifier for the photo",
         example = "1",
         required = true
     )
     val id: Long,
     
-    @Schema(
+    @field:Schema(
         description = "URL or file path to access the photo",
         example = "/uploads/photos/project-1/photo-abc123.jpg",
         required = true
     )
     val photoUrl: String,
     
-    @Schema(
+    @field:Schema(
         description = "ID of the project this photo belongs to",
         example = "5",
         required = true
@@ -50,14 +50,14 @@ data class PhotoDto(
     description = "Request payload for creating a new photo record"
 )
 data class PhotoCreateDto(
-    @Schema(
+    @field:Schema(
         description = "URL or file path where the photo is stored",
         example = "/uploads/photos/project-1/photo-xyz789.jpg",
         required = true
     )
     val photoUrl: String,
     
-    @Schema(
+    @field:Schema(
         description = "ID of the project to associate this photo with",
         example = "5",
         required = true
