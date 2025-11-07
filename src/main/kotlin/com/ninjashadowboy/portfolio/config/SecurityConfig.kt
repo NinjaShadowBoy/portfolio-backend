@@ -27,15 +27,30 @@ class SecurityConfig(
 ) {
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        http.csrf { it.disable() }.cors { it }.authorizeHttpRequests { auth ->
-            auth.requestMatchers(
-                "/**", "/api/v1/auth/**", "/oauth2/**",
-                "/css/**", "/js/**", "/images/**", "/favicon.ico",
-                "/uploads/**", "/swagger-ui", "/swagger-ui/**", "/api-docs", "/api-docs/**",
-            ).permitAll().requestMatchers(HttpMethod.GET, "/api/v1/projects").permitAll()
-                .requestMatchers("/api/v1/photo/**").hasAuthority("ADMIN").anyRequest().authenticated()
-        }.sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
-            .authenticationProvider(authenticationProvider).formLogin { formLogin -> formLogin.disable() }
+        http.csrf { it.disable() }
+            .cors { it }
+            .authorizeHttpRequests { auth ->
+                auth
+                    // Allow all OPTIONS requests for CORS preflight
+                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                    // Public authentication endpoints
+                    .requestMatchers("/api/v1/auth/**", "/oauth2/**").permitAll()
+                    // Static resources
+                    .requestMatchers("/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
+                    // File uploads
+                    .requestMatchers("/uploads/**").permitAll()
+                    // API documentation
+                    .requestMatchers("/swagger-ui", "/swagger-ui/**", "/api-docs", "/api-docs/**").permitAll()
+                    // Public GET endpoints
+                    .requestMatchers(HttpMethod.GET, "/api/v1/projects", "/api/v1/projects/**").permitAll()
+                    // Admin-only endpoints
+                    .requestMatchers("/api/v1/photo/**").hasAuthority("ADMIN")
+                    // All other requests require authentication
+                    .anyRequest().authenticated()
+            }
+            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .authenticationProvider(authenticationProvider)
+            .formLogin { formLogin -> formLogin.disable() }
             .oauth2Login { oauth2 ->
                 oauth2
                     .userInfoEndpoint { userInfo ->
@@ -52,15 +67,19 @@ class SecurityConfig(
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration().apply {
-            allowedOrigins = listOf(
-                "http://localhost:8080",
-                "http://localhost:3000",
-                "http://localhost:4200",
-                "https://ninjashadowboy.github.io"
+            // Allow multiple origins for different environments
+            allowedOriginPatterns = listOf(
+                "http://localhost:*",
+                "https://ninjashadowboy.github.io",
+                "https://*.onrender.com",  // For Render deployments
+                "https://*.vercel.app",    // For Vercel deployments
+                "https://*.netlify.app"    // For Netlify deployments
             )
-            allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
+            allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
             allowedHeaders = listOf("*")
+            exposedHeaders = listOf("Authorization", "Content-Type")
             allowCredentials = true // Using jwt via Authorization header
+            maxAge = 3600L // Cache preflight response for 1 hour
         }
 
         val source = UrlBasedCorsConfigurationSource().apply {

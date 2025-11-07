@@ -16,11 +16,18 @@ class WebConfig : WebMvcConfigurer {
 
     override fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")
-            .allowedOrigins("http://localhost:3000", "http://localhost:4200",
-            "https://ninjashadowboy.github.io") // Frontend URL
-            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+            .allowedOriginPatterns(
+                "http://localhost:*",
+                "https://ninjashadowboy.github.io",
+                "https://*.onrender.com",
+                "https://*.vercel.app",
+                "https://*.netlify.app"
+            )
+            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
             .allowedHeaders("*")
+            .exposedHeaders("Authorization", "Content-Type")
             .allowCredentials(true)
+            .maxAge(3600)
     }
 
     /**
