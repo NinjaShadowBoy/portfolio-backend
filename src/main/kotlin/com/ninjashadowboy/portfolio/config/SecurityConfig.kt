@@ -43,8 +43,13 @@ class SecurityConfig(
                     .requestMatchers("/swagger-ui", "/swagger-ui/**", "/api-docs", "/api-docs/**").permitAll()
                     // Public GET endpoints
                     .requestMatchers(HttpMethod.GET, "/api/v1/projects", "/api/v1/projects/**").permitAll()
+                    // Contact form - public POST endpoint
+                    .requestMatchers(HttpMethod.POST, "/api/v1/contact").permitAll()
                     // Admin-only endpoints
                     .requestMatchers("/api/v1/photo/**").hasAuthority("ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/api/v1/contact/**").hasAuthority("ADMIN")
+                    .requestMatchers(HttpMethod.PATCH, "/api/v1/contact/**").hasAuthority("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/api/v1/contact/**").hasAuthority("ADMIN")
                     // All other requests require authentication
                     .anyRequest().authenticated()
             }
