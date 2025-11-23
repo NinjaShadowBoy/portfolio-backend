@@ -37,8 +37,6 @@ class SecurityConfig(
                     .requestMatchers("/api/v1/auth/**", "/oauth2/**").permitAll()
                     // Static resources
                     .requestMatchers("/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
-                    // File uploads
-                    .requestMatchers("/uploads/**").permitAll()
                     // API documentation
                     .requestMatchers("/swagger-ui", "/swagger-ui/**", "/api-docs", "/api-docs/**").permitAll()
                     // Public GET endpoints

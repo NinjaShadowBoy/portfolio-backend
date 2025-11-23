@@ -10,18 +10,18 @@ import io.swagger.v3.oas.annotations.tags.Tag
     description = """
         Photo management endpoints for projects and user profiles.
         
-        **Features:**
-        - Upload photos for portfolio projects
-        - Upload/update profile photos
-        - Delete photos from system
+        **How it works now:**
+        - The frontend uploads images to Cloudinary.
+        - Cloudinary returns a secure URL.
+        - The frontend forwards that URL to these endpoints so the backend only stores metadata.
         
-        **File Requirements:**
-        - **Supported formats:** JPEG, PNG, GIF
-        - **Maximum file size:** 10MB per image
-        - **Maximum request size:** 15MB total
+        **Features:**
+        - Persist Cloudinary URLs for project galleries
+        - Update the profile photo reference without handling binary files
+        - Delete photo metadata when no longer needed (the actual asset remains on Cloudinary)
         
         **Security:**
-        - All upload endpoints require authentication
+        - All photo write endpoints require authentication
         - Delete operations require ADMIN role or ownership
     """
 )

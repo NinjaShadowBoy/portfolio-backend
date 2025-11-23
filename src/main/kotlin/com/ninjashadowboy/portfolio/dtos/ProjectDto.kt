@@ -121,8 +121,8 @@ data class ProjectDto(
     val totalRatings: Int,
     
     @field:Schema(
-        description = "List of URLs to photos associated with this project",
-        example = "[\"/uploads/photos/project-1/screenshot1.jpg\", \"/uploads/photos/project-1/screenshot2.jpg\"]",
+        description = "List of Cloudinary (or CDN) URLs associated with this project",
+        example = "[\"https://res.cloudinary.com/demo/image/upload/v123/project/screenshot1.jpg\", \"https://res.cloudinary.com/demo/image/upload/v123/project/screenshot2.jpg\"]",
         required = true
     )
     val photoUrls: List<String>,

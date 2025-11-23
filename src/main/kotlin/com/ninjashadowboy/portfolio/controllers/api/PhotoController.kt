@@ -2,8 +2,8 @@ package com.ninjashadowboy.portfolio.controllers.api
 
 import com.ninjashadowboy.portfolio.controllers.docs.PhotoApiDocs
 import com.ninjashadowboy.portfolio.dtos.PhotoDto
+import com.ninjashadowboy.portfolio.dtos.PhotoCreateDto
 import com.ninjashadowboy.portfolio.services.PhotoService
-import com.ninjashadowboy.portfolio.utils.FileUtils
 import com.ninjashadowboy.portfolio.utils.ResponseUtils
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -15,10 +15,10 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.multipart.MultipartFile
 
 /**
  * REST API controller for managing photo operations.
+ * Photos are stored in Cloudinary and URLs are persisted in the database.
  */
 @RestController
 @RequestMapping("/api/v1/photos")
@@ -27,79 +27,76 @@ class PhotoController(
 ) : BaseController(), PhotoApiDocs {
 
     @Operation(
-        summary = "Upload project photo",
-        description = "Uploads a photo file and associates it with a specific portfolio project.",
+        summary = "Save project photo URL",
+        description = "Saves a photo URL (from Cloudinary) and associates it with a specific portfolio project.",
         security = [SecurityRequirement(name = "bearerAuth")]
     )
     @ApiResponses(
         value = [
             ApiResponse(
                 responseCode = "201",
-                description = "Photo uploaded successfully",
+                description = "Photo URL saved successfully",
                 content = [Content(schema = Schema(implementation = PhotoDto::class))]
             ),
-            ApiResponse(responseCode = "400", description = "Invalid file or parameters"),
+            ApiResponse(responseCode = "400", description = "Invalid URL or parameters"),
             ApiResponse(responseCode = "401", description = "Unauthorized"),
-            ApiResponse(responseCode = "404", description = "Project not found"),
-            ApiResponse(responseCode = "413", description = "File too large")
+            ApiResponse(responseCode = "404", description = "Project not found")
         ]
     )
-    @PutMapping(
+    @PostMapping(
         "/{projectId}",
-        consumes = [MediaType.MULTIPART_FORM_DATA_VALUE]
+        consumes = [MediaType.APPLICATION_JSON_VALUE]
     )
-    fun uploadProjectPhoto(
-        @Parameter(description = "Photo file to upload (JPEG, PNG, or GIF)", required = true)
-        @RequestParam("photo") file: MultipartFile,
+    fun saveProjectPhoto(
+        @Parameter(description = "Photo data containing Cloudinary URL", required = true)
+        @RequestBody photoRequest: PhotoCreateDto,
         
         @Parameter(description = "ID of the project to associate the photo with", required = true)
         @PathVariable("projectId") projectId: Int
     ): ResponseEntity<PhotoDto> {
-        logRequest("uploadProjectPhoto", mapOf("projectId" to projectId, "filename" to (file.originalFilename ?: "unknown")))
+        logRequest("saveProjectPhoto", mapOf("projectId" to projectId, "photoUrl" to photoRequest.photoUrl))
         
-        FileUtils.validateImageFile(file)
-        val photo = photoService.saveProjectPhoto(file, projectId)
+        val photo = photoService.saveProjectPhoto(photoRequest.photoUrl, projectId)
         
-        logResponse("uploadProjectPhoto", "Photo uploaded with ID: ${photo.id}")
+        logResponse("saveProjectPhoto", "Photo saved with ID: ${photo.id}")
         return ResponseUtils.created(photo)
     }
 
     @Operation(
-        summary = "Upload profile photo",
-        description = "Uploads or updates the authenticated user's profile photo.",
+        summary = "Save profile photo URL",
+        description = "Saves or updates the authenticated user's profile photo URL (from Cloudinary).",
         security = [SecurityRequirement(name = "bearerAuth")]
     )
     @ApiResponses(
         value = [
             ApiResponse(
                 responseCode = "201",
-                description = "Profile photo uploaded successfully",
+                description = "Profile photo URL saved successfully",
                 content = [Content(schema = Schema(implementation = PhotoDto::class))]
             ),
-            ApiResponse(responseCode = "400", description = "Invalid file"),
+            ApiResponse(responseCode = "400", description = "Invalid URL"),
             ApiResponse(responseCode = "401", description = "Unauthorized")
         ]
     )
-    @PutMapping(
+    @PostMapping(
         "/profile",
-        consumes = [MediaType.MULTIPART_FORM_DATA_VALUE]
+        consumes = [MediaType.APPLICATION_JSON_VALUE]
     )
-    fun uploadProfilePhoto(
-        @Parameter(description = "Profile photo file (square images recommended)", required = true)
-        @RequestPart("photo") file: MultipartFile
+    fun saveProfilePhoto(
+        @Parameter(description = "Profile photo URL from Cloudinary", required = true)
+        @RequestBody photoRequest: PhotoCreateDto
     ): ResponseEntity<PhotoDto> {
-        logRequest("uploadProfilePhoto", mapOf("filename" to (file.originalFilename ?: "unknown")))
+        logRequest("saveProfilePhoto", mapOf("photoUrl" to photoRequest.photoUrl))
         
-        FileUtils.validateImageFile(file)
-        val photo = photoService.saveProfilePhoto(file)
+        val photo = photoService.saveProfilePhoto(photoRequest.photoUrl)
         
-        logResponse("uploadProfilePhoto", "Profile photo uploaded with ID: ${photo.id}")
+        logResponse("saveProfilePhoto", "Profile photo saved with ID: ${photo.id}")
         return ResponseUtils.created(photo)
     }
 
     @Operation(
         summary = "Delete photo",
-        description = "Permanently deletes a photo from both the database and file system.",
+        description = "Permanently deletes a photo record from the database. Note: The actual image remains in Cloudinary.",
         security = [SecurityRequirement(name = "bearerAuth")]
     )
     @ApiResponses(
@@ -117,7 +114,7 @@ class PhotoController(
     ): ResponseEntity<Unit> {
         logRequest("deletePhoto", mapOf("photoId" to photoId))
         
-        photoService.deletePhotoFromDBAndDisk(photoId)
+        photoService.deletePhotoFromDB(photoId)
         
         logResponse("deletePhoto")
         return ResponseUtils.noContent()

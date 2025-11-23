@@ -33,9 +33,6 @@ RUN addgroup -S app && adduser -S app -G app
 # Copy the fat jar from the builder stage
 COPY --from=builder /app/build/libs/*.jar /app/app.jar
 
-# Ensure upload directories exist (these can be overridden by env properties)
-RUN mkdir -p /data/uploads/photos /data/uploads/profilephoto && chown -R app:app /data
-
 # Expose the default port (Render will route traffic to $PORT; we map via JAVA_TOOL_OPTIONS)
 EXPOSE 8080
 

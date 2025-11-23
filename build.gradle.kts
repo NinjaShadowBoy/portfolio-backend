@@ -51,6 +51,9 @@ dependencies {
 
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.4.0")
 
+    // Cloudinary SDK for image upload and management
+    implementation("com.cloudinary:cloudinary-http44:1.36.0")
+
     // Safe SnakeYAML override
     implementation("org.yaml:snakeyaml:2.2")
 }

@@ -24,8 +24,8 @@ data class PhotoDto(
     val id: Long,
     
     @field:Schema(
-        description = "URL or file path to access the photo",
-        example = "/uploads/photos/project-1/photo-abc123.jpg",
+        description = "Public URL (e.g., Cloudinary) to access the photo",
+        example = "https://res.cloudinary.com/demo/image/upload/v1234567890/projects/5/photo-abc123.jpg",
         required = true
     )
     val photoUrl: String,
@@ -41,26 +41,26 @@ data class PhotoDto(
 /**
  * Data Transfer Object for creating a new photo.
  * 
- * Used when associating an uploaded photo with a project.
+ * Used when saving a Cloudinary photo URL to the database.
  * 
- * @property photoUrl URL or path where the photo is stored
- * @property projectId ID of the project to associate the photo with
+ * @property photoUrl Cloudinary URL where the photo is stored
+ * @property projectId ID of the project to associate the photo with (optional for profile photos)
  */
 @Schema(
     description = "Request payload for creating a new photo record"
 )
 data class PhotoCreateDto(
     @field:Schema(
-        description = "URL or file path where the photo is stored",
-        example = "/uploads/photos/project-1/photo-xyz789.jpg",
+        description = "Cloudinary URL where the photo is stored",
+        example = "https://res.cloudinary.com/demo/image/upload/v1234567890/portfolio/projects/5/photo.jpg",
         required = true
     )
     val photoUrl: String,
     
     @field:Schema(
-        description = "ID of the project to associate this photo with",
+        description = "ID of the project to associate this photo with (not required for profile photos)",
         example = "5",
-        required = true
+        required = false
     )
-    val projectId: Long
+    val projectId: Long? = null
 )

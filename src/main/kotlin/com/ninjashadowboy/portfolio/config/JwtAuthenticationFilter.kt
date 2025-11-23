@@ -237,11 +237,10 @@ class JwtAuthenticationFilter(
 
         // Skip authentication for public endpoints
         return path.startsWith("/api/v1/auth/") ||
-                path.startsWith("/css/") ||
-                path.startsWith("/js/") ||
-                path.startsWith("/images/") ||
-                path.startsWith("/uploads/") ||
-                path.startsWith("/swagger-ui") ||
+            path.startsWith("/css/") ||
+            path.startsWith("/js/") ||
+            path.startsWith("/images/") ||
+            path.startsWith("/swagger-ui") ||
                 path.startsWith("/api-docs") ||
                 path == "/favicon.ico" ||
                 request.method == "OPTIONS"

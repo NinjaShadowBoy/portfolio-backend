@@ -19,7 +19,6 @@ import org.springframework.web.bind.MissingServletRequestParameterException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
-import org.springframework.web.multipart.MaxUploadSizeExceededException
 import org.springframework.web.servlet.NoHandlerFoundException
 import java.io.IOException
 import java.time.Instant
@@ -428,26 +427,6 @@ class GlobalExceptionHandler {
         )
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse)
-    }
-
-    // ─── FILE UPLOAD EXCEPTIONS ───────────────────────────────────────────────────
-
-    @ExceptionHandler(MaxUploadSizeExceededException::class)
-    fun handleMaxUploadSizeExceededException(
-        ex: MaxUploadSizeExceededException, request: HttpServletRequest
-    ): ResponseEntity<ApiErrorResponse> {
-        log.warn("File too large: {} - {}", ex.message, request.requestURI)
-
-        val errorResponse = ApiErrorResponse(
-            status = HttpStatus.PAYLOAD_TOO_LARGE.value(),
-            error = "Payload Too Large",
-            code = "FILE_TOO_LARGE",
-            message = "The uploaded file exceeds the maximum allowed size",
-            path = request.requestURI,
-            timestamp = Instant.now()
-        )
-
-        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(errorResponse)
     }
 
     @ExceptionHandler(IOException::class)

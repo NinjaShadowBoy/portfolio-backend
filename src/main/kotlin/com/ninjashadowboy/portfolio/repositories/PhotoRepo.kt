@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface PhotoRepo : JpaRepository<Photo, Long> {
     fun findPhotosByProject(project: Project): List<Photo>
+    fun findAllByProjectIsNull(): List<Photo>
 }
