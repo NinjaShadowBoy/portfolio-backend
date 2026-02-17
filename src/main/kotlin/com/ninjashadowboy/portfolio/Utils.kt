@@ -15,4 +15,3 @@ object MyProfiler {
         return result
     }
 }
-
