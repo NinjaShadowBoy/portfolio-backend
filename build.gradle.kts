@@ -35,8 +35,9 @@ dependencies {
     implementation("org.postgresql:postgresql:42.7.7")
 
     runtimeOnly("com.mysql:mysql-connector-j")
-    compileOnly("org.projectlombok:lombok")
-    annotationProcessor("org.projectlombok:lombok")
+    // Lombok removed to embrace pure Kotlin data classes
+    // compileOnly("org.projectlombok:lombok")
+    // annotationProcessor("org.projectlombok:lombok")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")

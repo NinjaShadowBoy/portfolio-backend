@@ -2,8 +2,8 @@
 # Build stage
 FROM eclipse-temurin:17-jdk-alpine AS builder
 
-# Install packages required by Gradle wrapper (unzip)
-RUN apk add --no-cache bash unzip
+# Install packages required by Gradle wrapper (bash, unzip, dos2unix)
+RUN apk add --no-cache bash unzip dos2unix
 
 WORKDIR /app
 
@@ -13,8 +13,11 @@ COPY gradlew .
 COPY settings.gradle.kts .
 COPY build.gradle.kts .
 
+# Fix line endings (Windows to Unix) and make executable
+RUN dos2unix ./gradlew && chmod +x ./gradlew
+
 # Pre-download dependencies
-RUN chmod +x ./gradlew && ./gradlew --no-daemon dependencies > /dev/null || true
+RUN ./gradlew --no-daemon dependencies > /dev/null || true
 
 # Now copy the source
 COPY src src

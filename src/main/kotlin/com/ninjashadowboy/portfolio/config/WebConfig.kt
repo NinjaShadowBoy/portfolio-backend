@@ -12,6 +12,7 @@ class WebConfig : WebMvcConfigurer {
             .allowedOriginPatterns(
                 "http://localhost:*",
                 "https://ninjashadowboy.github.io",
+                "https://alexabena.me",
                 "https://*.onrender.com",
                 "https://*.vercel.app",
                 "https://*.netlify.app"

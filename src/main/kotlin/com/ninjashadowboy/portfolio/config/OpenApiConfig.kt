@@ -87,8 +87,8 @@ class OpenApiConfig {
                         
                         Most endpoints require authentication using JWT Bearer tokens. To authenticate:
                         
-                        1. Register a new account using `POST /api/v1/auth/register`
-                        2. Login using `POST /api/v1/auth/login` to receive a JWT token
+                        1. Register a new account using `POST /portfolio/api/v1/auth/register`
+                        2. Login using `POST /portfolio/api/v1/auth/login` to receive a JWT token
                         3. Include the token in the `Authorization` header as `Bearer <token>`
                         4. The token is valid for 24 hours by default
                         
@@ -109,7 +109,7 @@ class OpenApiConfig {
                         
                         ## API Versioning
                         
-                        The API is versioned through the URL path (`/api/v1/`). Breaking changes will 
+                        The API is versioned through the URL path (`/portfolio/api/v1/`). Breaking changes will 
                         result in a new version (`/api/v2/`), while the old version will be maintained 
                         for backward compatibility.
                         
@@ -131,10 +131,10 @@ class OpenApiConfig {
             .servers(
                 listOf(
                     Server()
-                        .url("http://localhost:$serverPort")
+                        .url("http://localhost:$serverPort/portfolio")
                         .description("Local Development Server"),
                     Server()
-                        .url("https://api.portfolio.com")
+                        .url("https://api.portfolio.com/portfolio")
                         .description("Production Server")
                 )
             )
@@ -151,7 +151,7 @@ class OpenApiConfig {
                                 JWT Bearer token authentication.
                                 
                                 **How to use:**
-                                1. Obtain a JWT token by calling `/api/v1/auth/login`
+                                1. Obtain a JWT token by calling `/portfolio/api/v1/auth/login`
                                 2. Click the 'Authorize' button below
                                 3. Enter: `Bearer <your-token>` (the word 'Bearer' followed by a space and your token)
                                 4. Click 'Authorize' and then 'Close'

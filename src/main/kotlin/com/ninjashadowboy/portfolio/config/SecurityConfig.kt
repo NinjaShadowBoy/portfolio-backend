@@ -74,6 +74,7 @@ class SecurityConfig(
             allowedOriginPatterns = listOf(
                 "http://localhost:*",
                 "https://ninjashadowboy.github.io",
+                "https://alexabena.me",
                 "https://*.onrender.com",  // For Render deployments
                 "https://*.vercel.app",    // For Vercel deployments
                 "https://*.netlify.app"    // For Netlify deployments
