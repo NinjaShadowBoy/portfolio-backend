@@ -34,7 +34,7 @@ You need JDK 17 and a PostgreSQL server.
 git clone https://github.com/NinjaShadowBoy/portfolio-backend.git
 cd portfolio-backend
 createdb portfolio            # or create the database any other way
-./gradlew bootRun             # on Windows: gradlew.bat bootRun
+./gradlew bootRun
 ```
 
 The API starts on `http://localhost:8080/portfolio`, so routes look like
