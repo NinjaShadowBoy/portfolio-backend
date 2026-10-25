@@ -33,6 +33,7 @@ You need JDK 17 and a PostgreSQL server.
 ```bash
 git clone https://github.com/NinjaShadowBoy/portfolio-backend.git
 cd portfolio-backend
+chmod +x gradlew              # the wrapper is not marked executable in git
 createdb portfolio            # or create the database any other way
 ./gradlew bootRun
 ```
